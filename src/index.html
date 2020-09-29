@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="main.js" defer></script>
+    <title>Document</title>
+</head>
+<body>
+    <div class="main-container">
+        <h2 class="main-heading">Minesweeper</h2>
+        <div id="game-type" class="game-selector">
+            <!-- <select name="complexity" id=""></select> -->
+            <label for="rows"></label>
+            <input type="number" name="rows" id="rows">
+            <label for="cols"></label>
+            <input type="number" name="cols" id="cols">
+            <button onclick="module.generateGame()"> Generate </button>
+        </div>
+        <div id="gameContainer" class="game-container"></div>
+        <div class="message" id="message"></div>
+    </div>
+</body>
+</html>
