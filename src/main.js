@@ -2,7 +2,9 @@ var module = (function () {
     let gameContainer;
     let matrix;
     let totalBombs = 0;
+    let isOver = false;
 
+    // Calculate the count of bombs around a tile
     function getAdjBombCount (matrix, i, j) {
         let adjBc = 0;
         if (matrix[i] && matrix[i][j - 1] != undefined && matrix[i][j - 1] == -1) {
@@ -32,9 +34,18 @@ var module = (function () {
         return adjBc;
     }
 
+    // Entry point for the game
+    // Creates the matrix and calls render method
     function generateGame () {
         let rows = Number(document.getElementById("rows").value);
         let columns = Number(document.getElementById("cols").value);
+        isOver = false;
+        if (rows > 50 || columns > 50 || rows <= 0 || columns <= 0) {
+            let message = document.getElementById('message');
+            message.innerText = `Cannot create game of size [${rows}] X [${columns}]`;
+            return;
+        }
+        totalBombs = 0;
         matrix = new Array(rows);
         for (let i = 0; i < rows; i++) {
             matrix[i] = new Array(columns);
@@ -58,6 +69,7 @@ var module = (function () {
         renderMatrix(matrix, rows, columns);
     }
 
+    // Actual rendering logic
     function renderMatrix (matrix, rows, columns) {
         gameContainer = document.getElementById('gameContainer');
         let message = document.getElementById('message');
@@ -71,16 +83,17 @@ var module = (function () {
                 gameContainer.appendChild(temp);
             }
         }
-        gameContainer.setAttribute('style', `display:grid; ${getGridAttrs(rows, columns)}`);
+        gameContainer.setAttribute('style', `${getGridAttrs(rows, columns)}`);
         gameContainer.addEventListener("click", tileClickHandler);
         gameContainer.addEventListener("contextmenu", rightClickHandler);
+        message.style.color = "red";
         message.innerText = `Total Mines Left: ${totalBombs}`;
     }
 
     function tileClickHandler (event) {
-        if (event.target.attributes.flag && event.target.attributes.flag.value == "true") {
-            return;
-        } else if (event.target.style.backgroundImage == 'none') {
+        if ((event.target.attributes.flag && event.target.attributes.flag.value == "true") || 
+            event.target.style.backgroundImage == 'none' ||
+            isOver) {
             return;
         }
         let row = Number(event.target.id.split('-')[1]);
@@ -106,6 +119,9 @@ var module = (function () {
 
     function rightClickHandler (event) {
         event.preventDefault();
+        if (event.target.style.backgroundImage == 'none' || isOver) {
+            return;
+        }
         if (event.target.attributes.flag && event.target.attributes.flag.value == "true") {
             event.target.style.backgroundImage = `url("./img/base.svg")`;
             event.target.setAttribute('flag', false);
@@ -114,6 +130,11 @@ var module = (function () {
             event.target.style.backgroundImage = `url("./img/flag.svg")`;
             event.target.setAttribute('flag', true);
             totalBombs--;
+        }
+        let message = document.getElementById('message');
+        message.innerText = `Total Mines Left: ${totalBombs}`;
+        if (totalBombs == 0) {
+            checkGameStatus();
         }
     }
 
@@ -245,6 +266,7 @@ var module = (function () {
     }
 
     function endGame () {
+        isOver = true;
         for(let i = 0; i < gameContainer.children.length; i++) {
             let row = gameContainer.children[i].id.split('-')[1];
             let col = gameContainer.children[i].id.split('-')[2];
@@ -263,6 +285,26 @@ var module = (function () {
         }
         let message = document.getElementById('message');
         message.innerText = "Game over"
+    }
+
+    function checkGameStatus () {
+        let status = true;
+        for(let i = 0; i < gameContainer.children.length; i++) {
+            // check if all cells are either open or flagged
+            if ((gameContainer.children[i].attributes.flag && gameContainer.children[i].attributes.flag.value == "true") ||
+            gameContainer.children[i].style.backgroundImage == 'none') {
+                continue;
+            } else {
+                status = false;
+            }
+        }
+        if (status) {
+            let message = document.getElementById('message');
+            message.innerText = "You Won!!";
+            message.style.color = "green";
+        } else {
+            return;
+        }
     }
 
     function getGridAttrs (rows, columns) {

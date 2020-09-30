@@ -10,7 +10,6 @@ body {
     grid-template-rows: 3rem 3rem 1fr 3rem;
     grid-gap: 1rem;
     margin: 1rem;
-    justify-content: center;
 }
 
 .main-heading {
@@ -18,8 +17,16 @@ body {
 }
 
 .game-container {
-    /* height: minmax(10rem, 50vh);
-    width: minmax(10rem, 50vh); */
+    display: grid;
+    justify-content: center;
+}
+
+.game-selector {
+    display: grid;
+    grid-template-columns: repeat(3, 10rem);
+    align-items: center;
+    grid-gap: 1rem;
+    justify-content: center;
 }
 
 .blocks {
