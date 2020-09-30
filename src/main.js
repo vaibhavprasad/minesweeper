@@ -302,6 +302,7 @@ var module = (function () {
             let message = document.getElementById('message');
             message.innerText = "You Won!!";
             message.style.color = "green";
+            isOver = true;
         } else {
             return;
         }
