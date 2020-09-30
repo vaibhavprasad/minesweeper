@@ -90,6 +90,7 @@ var module = (function () {
         message.innerText = `Total Mines Left: ${totalBombs}`;
     }
 
+    // Handler for left click event
     function tileClickHandler (event) {
         if ((event.target.attributes.flag && event.target.attributes.flag.value == "true") || 
             event.target.style.backgroundImage == 'none' ||
@@ -116,7 +117,7 @@ var module = (function () {
             endGame();
         }
     }
-
+    // Handler for right click event
     function rightClickHandler (event) {
         event.preventDefault();
         if (event.target.style.backgroundImage == 'none' || isOver) {
@@ -138,6 +139,7 @@ var module = (function () {
         }
     }
 
+    // This function recursively (DFS) reveals the tiles adjacent to the tiles which are empty
     function open (i,j, visited) {
         if (matrix[i] && matrix[i][j - 1] != undefined) {
             let el = document.getElementById(`tile-${i}-${j-1}`);
@@ -213,6 +215,7 @@ var module = (function () {
         }
     }
 
+    // This method reveals the tiles that are empty and lie adjacent to the clicked tile
     function unwrapNeighbours (i, j, visited) {
         if (matrix[i] && !visited[`${i}_${j - 1}`] && matrix[i][j - 1] == 0) {
             let el = document.getElementById(`tile-${i}-${j-1}`);
@@ -265,6 +268,7 @@ var module = (function () {
         return;
     }
 
+    // This method handles the game ending logic when a tile containing mine is clicked
     function endGame () {
         isOver = true;
         for(let i = 0; i < gameContainer.children.length; i++) {
@@ -287,6 +291,7 @@ var module = (function () {
         message.innerText = "Game over"
     }
 
+    // it is called once the bomb count becomes zero to check is the game is won
     function checkGameStatus () {
         let status = true;
         for(let i = 0; i < gameContainer.children.length; i++) {
@@ -308,6 +313,7 @@ var module = (function () {
         }
     }
 
+    // helper function to generate the grid
     function getGridAttrs (rows, columns) {
         let row = `repeat(${rows}, 2rem)`;
         let col = `repeat(${columns}, 2rem)`;
